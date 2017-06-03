@@ -8,7 +8,7 @@ export class NetworkService {
 
   constructor(
     // public http: Http,
-    public network: Network
+    public network: Network,
     ) 
   {
     //...
@@ -26,6 +26,11 @@ export class NetworkService {
       this.type = this.network.type;
       resolve(this.type);
     });
+  }
+
+  private showAlert()
+  {
+    
   }
 
 }// end of class.

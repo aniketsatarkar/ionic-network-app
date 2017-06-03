@@ -3,6 +3,8 @@ import { NavController } from 'ionic-angular';
 import { NetworkService } from '../../providers/network-service';
 import { AlertController } from 'ionic-angular';
 
+declare let networkinterface: any;
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -22,15 +24,29 @@ export class HomePage {
   {
     this.networkService.getNetworkType().then(type => 
     {
-      let alert = this.alertCtrl.create(
-        {
-          title: 'Network Type',
-          message: <string>type,
-          buttons: ['Ok']
-        });
-
-        alert.present();
+      this.showAlert('Network Type', <string>type);
     });
+
+    this.getIp();
+  }
+
+  private getIp()
+  {
+    networkinterface.getIPAddress((ip) =>  
+    { 
+      this.showAlert('IP Address', <string>ip);
+    });
+  }
+
+  private showAlert(title: string, message: string, show:boolean = true)
+  {
+    let alert = this.alertCtrl.create(
+      {
+        title: title,
+        message: message,
+        buttons: ['Ok']
+      });
+      alert.present();
   }
 
 }// end of class.
