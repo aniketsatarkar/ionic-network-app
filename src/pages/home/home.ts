@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { NetworkService } from '../../providers/network-service';
-import { AlertController } from 'ionic-angular';
+import { AlertController, Platform } from 'ionic-angular';
 
-declare let networkinterface: any;
+declare const networkinterface;
 
 @Component({
   selector: 'page-home',
@@ -14,27 +14,60 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     public networkService: NetworkService,
-    public alertCtrl: AlertController
-    ) 
+    public alertCtrl: AlertController,
+    public platform: Platform,
+    public _ngZone : NgZone
+    )
   {
     //...
   }
 
-  private showNetworkType()
+  wifiIp: string  = '0.0.0.0';
+  cellIp : string = '0.0.0.0';
+
+  public refreshIp()
   {
-    this.networkService.getNetworkType().then(type => 
+    console.log('refreshIP clicked');
+		try 
+		{
+			// networkinterface.getWiFiIPAddress((ip) => 
+			// {
+			// 	console.log('getWiFiIPAddress ip', ip);
+			// 	this._ngZone.run(() => 
+      //   {
+			// 		this.wifiIp = ip;
+			// 	});
+			// });
+
+      if(networkinterface == null || networkinterface == undefined)
+        console.log('network interface is either null or undefined !!!');
+
+			networkinterface.getIPAddress((ip) => 
+			{
+				console.log('getCarrierIPAddress ip', ip);
+				this._ngZone.run(() => 
+        {
+					this.cellIp = ip;
+				});
+			}, (error) =>
+      {
+        console.log('AN ERROR OCCURED !');
+        console.log(error);
+      });
+		}
+    catch (e) 
     {
-      this.showAlert('Network Type', <string>type);
-    });
-
-    this.getIp();
+			console.error("ERROR : " + e);
+			this.wifiIp = "error, check logs";
+      this.cellIp = 'error, check logs';
+    }
   }
-
-  private getIp()
+  
+  public whenDevice_Ready()
   {
-    networkinterface.getIPAddress((ip) =>  
-    { 
-      this.showAlert('IP Address', <string>ip);
+    this.platform.ready().then(() => 
+    {
+      this.refreshIp();
     });
   }
 

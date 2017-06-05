@@ -7,5 +7,22 @@
 </ion-header>
 
 <ion-content padding>
-  <button ion-button (click)="showNetworkType()">Get Network Type</button>
+  <button (click)="refreshIP()" ion-button full>Refresh IP</button>
+  <button (click)="whenDevice_Ready()" ion-button full>When Device Ready</button>
+  <ion-card>
+    <ion-card-header>
+      Carrier IP
+    </ion-card-header>
+    <ion-card-content>
+      {{cellIp}}
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      WiFi IP
+    </ion-card-header>
+    <ion-card-content>
+      {{wifiIp}}
+    </ion-card-content>
+  </ion-card>
 </ion-content>
